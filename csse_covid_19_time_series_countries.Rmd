@@ -1,0 +1,94 @@
+---
+title: "Individual countries"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggrepel)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, child="childs/csse_tables_all.Rmd"}
+```
+
+```{r, echo=FALSE}
+data_table <- merge(
+  csse_confirmed_table %>% subset(is.na(`Province/State`)) %>% rename(Confirmed = "Cases"),
+  csse_deaths_table %>% subset(is.na(`Province/State`)) %>% rename(Deaths = "Cases"),
+  all = TRUE
+) %>% select(-`Province/State`)
+# data_table <- merge(
+#   data_table,
+#   rename(csse_recovered_table, Recovered = "Cases"),
+#   all = TRUE
+# )
+# data_table <- data_table %>% mutate(Active = Confirmed - Deaths - Recovered)
+categories_colors <- c(
+          "Confirmed" = "orange", 
+          "Active" = "red",
+          "Deaths" = "black",
+          "Recovered" = "blue")
+categories_colors <- c(
+          "Confirmed" = "orange", 
+          "Deaths" = "black")
+plot_data <- data_table %>%
+    group_by(`Date`, `Country/Region`) %>%
+    summarise_at(vars(names(categories_colors)), sum)
+```
+
+```{r}
+.ggplot_series <- function(data) {
+    .plot_data <- data %>% 
+        pivot_longer(cols = names(categories_colors), names_to = "Group", values_to = "Cases") %>% 
+        mutate(Group = factor(Group, names(categories_colors))) %>%
+        arrange(Date)
+    .label_data <- .plot_data %>%
+        subset(Date == max(Date))
+    .plot_data %>% ggplot(aes(Date, Cases, color = Group)) +
+        geom_line() +
+        geom_point() +
+        geom_text_repel(aes(label = format(Cases, big.mark = ",")), .label_data,
+            min.segment.length = unit(0, "mm"), nudge_x = 1, hjust = 0, show.legend = FALSE) +
+        scale_color_manual(values = categories_colors) +
+        cowplot::theme_cowplot() +
+        theme(legend.position = "bottom") +
+        coord_cartesian(xlim = c(min(.plot_data$Date), max(.label_data$Date) + 5))
+}
+```
+
+## All {.tabset}
+
+### Linear
+
+```{r}
+chunk_plot_data <- plot_data %>%
+      mutate(`Country/Region` = "All") %>% 
+      group_by(`Date`, `Country/Region`) %>%
+      summarise_at(vars(names(categories_colors)), sum)
+gg <- chunk_plot_data %>% .ggplot_series()
+gg
+```
+
+### Logarithmic
+
+```{r}
+gg + scale_y_log10()
+```
+
+```{r, fig.width=8, fig.height=5, results='asis', warning=FALSE}
+for (country in unique(plot_data$`Country/Region`)) {
+  chunk_plot_data <- subset(plot_data, `Country/Region` == country)
+  if (max(chunk_plot_data$Confirmed, na.rm = TRUE) == 0) {
+      next()
+  }
+  cat(sprintf("## %s {.tabset}\n\n", country))
+  cat("### Linear\n\n")
+  gg <- chunk_plot_data %>% .ggplot_series()
+  print(gg)
+  cat("\n\n")
+  cat("### Logarithmic\n\n")
+  gg_log <- gg + scale_y_log10()
+  print(gg_log)
+  cat("\n\n")
+}
+```

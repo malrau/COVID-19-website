@@ -1,0 +1,9 @@
+---
+title: "About This Website"
+output:
+  html_document:
+    toc: false
+---
+
+This website was developed as a simple R markdown website.
+The source code is hosted on [this GitHub repository](https://github.com/kevinrue/COVID-19-website).

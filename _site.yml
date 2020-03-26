@@ -1,0 +1,36 @@
+name: "my-covid-19-website"
+navbar:
+  title: "My COVID-19 Website"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Countries"
+      menu:
+      - text: "Cumulative cases"
+        href: csse_covid_19_time_series_cumulative_cases.html
+      - text: "Daily progression"
+        href: csse_covid_19_time_series_daily_progression.html
+      - text: "Per capita"
+        href: csse_covid_19_time_series_per_capita.html
+      - text: "Individual countries"
+        href: csse_covid_19_time_series_countries.html
+    - text: "Regions"
+      menu:
+      - text: "China"
+        href: csse_covid_19_time_series_regions_china.html
+    - text: "Analyses"
+      menu:
+      - text: "Align countries"
+        href: analysis_align_countries.html
+    - text: "Data"
+      menu:
+      - text: "Population size"
+        href: wdi_population.html
+    - text: "About"
+      href: about.html
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    highlight: textmate
+exclude: ['COVID-19', 'R', 'site-output', 'childs']

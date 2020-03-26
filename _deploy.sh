@@ -1,0 +1,12 @@
+git clone -b gh-pages \
+  git@github.com:kevinrue/COVID-19-website.git \
+  site-output
+cd site-output
+git reset --hard HEAD^
+git rm -rf *
+cp -r ../_site/* ./
+git add --all *
+git commit -m "Update the site"
+git push -qf origin gh-pages
+cd ..
+rm -rf site-output

@@ -1,0 +1,8 @@
+## Confirmed cases
+
+Confirmed cases include _all_ cases detected detected over the course of the epidemic.
+This is different from the number of _active_ cases, which excludes confirmed cases that led to recovery or death.
+
+```{r, fig.width=8, fig.height=5, warning=FALSE}
+csse_confirmed_table %>% .plot_function(group = plot_group)
+```

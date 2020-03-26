@@ -1,0 +1,8 @@
+```{r, child="csse_table_confirmed.Rmd"}
+```
+
+```{r, child="csse_table_deaths.Rmd"}
+```
+
+```{r, child="csse_table_recovered.Rmd", eval=FALSE}
+```

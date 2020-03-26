@@ -1,0 +1,70 @@
+```{r, include=FALSE}
+library(tidyverse)
+library(plotly)
+```
+
+```{r}
+.plot_function <- function(data, group) {
+    label_data <- data %>%
+        subset(Date == max(Date))
+    fig <- plot_ly()
+    fig <- fig %>%
+        add_trace(
+            type = 'scatter',
+            mode = 'lines+markers',
+            x = data$Date,
+            y = data$Value,
+            color = data[[group]],
+            text = data[[group]],
+            hovertemplate = paste('<i>Value</i>: %{y}',
+                                '<br><b>Date</b>: %{x}<br>',
+                                '<b>%{text}</b>'),
+            showlegend = FALSE
+      )
+    fig <- fig %>% add_annotations(x = label_data$Date,
+                      y = label_data$Value,
+                      text = label_data[[group]],
+                      xref = "x",
+                      yref = "y",
+                      showarrow = TRUE,
+                      arrowhead = 4,
+                      arrowsize = .5,
+                      ax = 20,
+                      ay = 0,
+                      # Styling annotations' text:
+                      font = list(color = '#264E86',
+                                  family = 'sans serif',
+                                  size = 14))
+    saturdays <- data %>%
+      select(Date) %>%
+      unique() %>%
+      mutate(weekdays = weekdays(Date)) %>%
+      subset(weekdays == "Saturday") %>% 
+      pull(Date)
+    saturdays <- lapply(saturdays, function(date) {
+      lapply(date, function(x) { 
+        return(list(type = "rect",
+                 fillcolor = "orange", line = list(color = "orange"), opacity = 0.1,
+                 x0 = as.character(x), x1 = as.character(x+1), xref = "x",
+                 y0 = min(data$Value, na.rm = TRUE), y1 = max(data$Value, na.rm = TRUE), yref = "y"))
+        })
+    })
+    saturdays <- unlist(saturdays, recursive=FALSE)
+    fig <- layout(fig, title = "Orange areas indicate weekends", shapes = saturdays)
+    fig
+}
+```
+
+# Categories {.tabset}
+
+```{r, child="plot_confirmed_cases.Rmd"}
+```
+
+```{r, child="plot_active_cases.Rmd", eval=FALSE}
+```
+
+```{r, child="plot_deaths_cases.Rmd"}
+```
+
+```{r, child="plot_recovered_cases.Rmd", eval=FALSE}
+```

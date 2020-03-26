@@ -1,0 +1,31 @@
+---
+title: "Cumulative cases"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, child="childs/csse_tables_all.Rmd"}
+```
+
+The figures below display the total number of cases tracked over the course of the epidemic.
+
+```{r cumulative-cases}
+csse_confirmed_table <- csse_confirmed_table %>%
+    group_by(`Date`, `Country/Region`) %>%
+    summarise(Value = sum(Cases))
+csse_deaths_table <- csse_deaths_table %>%
+    group_by(`Date`, `Country/Region`) %>%
+    summarise(Value = sum(Cases))
+# csse_recovered_table <- csse_recovered_table %>%
+#     group_by(`Date`, `Country/Region`) %>%
+#     summarise(Value = sum(Cases))
+```
+
+```{r}
+plot_group <- "Country/Region"
+```
+
+```{r, child="childs/plot_categories.Rmd"}
+```

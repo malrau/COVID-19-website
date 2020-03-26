@@ -1,0 +1,43 @@
+---
+title: "Per 10k capita"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, child="childs/csse_tables_all.Rmd"}
+```
+
+```{r, child="childs/table_population.Rmd"}
+```
+
+The figures below display the number of cases per 10k residents ([2018 census](population_size.html)).
+
+```{r per-capita}
+csse_confirmed_table <- csse_confirmed_table %>%
+    left_join(population_table, by = c("Country/Region" = "country")) %>%
+    subset(SP.POP.TOTL > 0) %>% 
+    mutate(Value = Cases / SP.POP.TOTL * 10E3) %>% 
+    group_by(`Date`, `Country/Region`) %>%
+    summarise(Value = sum(Value))
+csse_deaths_table <- csse_deaths_table %>%
+    left_join(population_table, by = c("Country/Region" = "country")) %>% 
+    subset(SP.POP.TOTL > 0) %>% 
+    mutate(Value = Cases / SP.POP.TOTL * 10E3) %>%
+    group_by(`Date`, `Country/Region`) %>%
+    summarise(Value = sum(Value))
+# csse_recovered_table <- csse_recovered_table %>% 
+#     left_join(population_table, by = c("Country/Region" = "country")) %>%
+#     subset(SP.POP.TOTL > 0) %>% 
+#     mutate(Value = Cases / SP.POP.TOTL * 10E3) %>% 
+#     group_by(`Date`, `Country/Region`) %>%
+#     summarise(Value = sum(Value))
+```
+
+```{r}
+plot_group <- "Country/Region"
+```
+
+```{r, child="childs/plot_categories.Rmd"}
+```

@@ -1,0 +1,87 @@
+---
+title: "Align countries by number of cases"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(plotly)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, child="childs/csse_tables_all.Rmd"}
+```
+
+In this page, countries are aligned so that for each of them day 0 is the day when they confirmed their 100th case.
+
+```{r}
+.plot_function <- function(data) {
+    label_data <- data %>%
+        group_by(`Country/Region`) %>% 
+        top_n(1, Cases)
+    fig <- plot_ly() 
+    fig <- fig %>%
+        add_trace(
+            type = 'scatter',
+            mode = 'lines+markers',
+            x = data$`Days since 100th case`,
+            y = data$Cases,
+            color = data$`Country/Region`,
+            text = data$`Country/Region`,
+            hovertemplate = paste('<i>Cases</i>: %{y}',
+                                '<br><b>Relative day</b>: %{x}<br>',
+                                '<b>%{text}</b>'),
+            showlegend = FALSE
+      )
+    fig <- fig %>% add_annotations(x = label_data$`Days since 100th case`,
+                      y = label_data$Cases,
+                      text = label_data$`Country/Region`,
+                      xref = "x",
+                      yref = "y",
+                      showarrow = TRUE,
+                      arrowhead = 4,
+                      arrowsize = .5,
+                      ax = 20,
+                      ay = 0,
+                      # Styling annotations' text:
+                      font = list(color = '#264E86',
+                                  family = 'sans serif',
+                                  size = 14))
+    fig
+}
+```
+
+# Analyses {.tabset}
+
+## 100th confirmed case
+
+The figure below display the cumulative number of cases over the entire course of the epidemic.
+This is different from the number of _active_ cases, which excludes recovered cases and fatalities.
+
+```{r, fig.width=8, fig.height=5, warning=FALSE}
+csse_confirmed_table <- csse_confirmed_table %>%
+    group_by(`Date`, `Country/Region`) %>%
+    summarise(Cases = sum(Cases)) %>% 
+    subset(Cases > 100) %>% 
+    group_by(`Country/Region`) %>%
+    mutate(`Days since 100th case` = row_number() - 1) %>% 
+    arrange(`Country/Region`, Date) %>% 
+    ungroup()
+csse_confirmed_table %>% .plot_function()
+```
+
+## 10th confirmed death
+
+The figure below display the cumulative number of cases over the entire course of the epidemic.
+This is different from the number of _active_ cases, which excludes recovered cases and fatalities.
+
+```{r, fig.width=8, fig.height=5, warning=FALSE}
+csse_deaths_table <- csse_deaths_table %>%
+    group_by(`Date`, `Country/Region`) %>%
+    summarise(Cases = sum(Cases)) %>% 
+    subset(Cases > 10) %>% 
+    group_by(`Country/Region`) %>%
+    mutate(`Days since 100th case` = row_number() - 1) %>% 
+    arrange(`Country/Region`, Date) %>% 
+    ungroup()
+csse_deaths_table %>% .plot_function()
+```

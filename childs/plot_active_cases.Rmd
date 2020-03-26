@@ -1,0 +1,21 @@
+## Active cases
+
+Active cases are confirmed cases excluding those that led to death or recovery.
+
+```{r}
+csse_merged_table <- merge(
+  rename(csse_confirmed_table, Confirmed = "Value"),
+  rename(csse_deaths_table, Deaths = "Value"),
+  all = TRUE
+)
+csse_merged_table <- merge(
+  csse_merged_table,
+  rename(csse_recovered_table, Recovered = "Value"),
+  all = TRUE
+)
+csse_merged_table <- csse_merged_table %>% mutate(Value = Confirmed - Deaths - Recovered)
+```
+
+```{r, fig.width=8, fig.height=5, warning=FALSE}
+csse_merged_table %>% .plot_function(group = plot_group)
+```

@@ -1,0 +1,18 @@
+---
+title: "Population data"
+---
+
+```{r setup, include=FALSE}
+library(DT)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, child="childs/table_population.Rmd"}
+```
+
+The table below displays the population count for each country.
+
+```{r}
+DT::datatable(population_table, options = list(pageLength= 50))
+```
+

@@ -1,0 +1,21 @@
+```{r, include=FALSE}
+library(tidyverse)
+```
+
+```{r, child="format_date.Rmd"}
+```
+
+```{r, message=FALSE}
+csse_recovered_table <- read_csv("../COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv")
+```
+
+```{r}
+pattern_date <- "^[[:digit:]]+/[[:digit:]]+/[[:digit:]]{2}$"
+csse_recovered_table <- csse_recovered_table %>%
+    pivot_longer(matches(pattern_date), names_to = "Date", values_to = "Cases") %>% 
+    subset(!is.na(Cases))
+```
+
+```{r}
+csse_recovered_table <- format_date.csse(csse_recovered_table, "Date")
+```

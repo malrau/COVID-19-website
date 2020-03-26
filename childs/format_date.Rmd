@@ -1,0 +1,26 @@
+```{r, include=FALSE}
+library(tidyverse)
+```
+
+```{r}
+#' Format CSSE Date for R
+#'
+#' @param data A `data.frame`.
+#' @param col Name of the column that contains the date.
+#'
+#' @return The table `data` with the `col` columns formatted as a date compatible with `as.Date()`.
+format_date.csse <- function(data, col) {
+    date_split <- str_split_fixed(data[[col]], "/", 3)
+    storage.mode(date_split) <- "numeric"
+    date_split <- as.data.frame(date_split)
+    colnames(date_split) <- c("month", "day", "year")
+    date_split <- date_split %>%
+        mutate(
+            month = str_pad(month, width = 2, pad = "0"),
+            day = str_pad(day, width = 2, pad = "0"),
+            year = paste0("20", year))
+    data[col] <- date_split %>% unite(col="date", year, month, day, sep = "/", remove = TRUE, na.rm = FALSE)
+    data[[col]] <- as.Date.character(data[[col]])
+    data
+}
+```

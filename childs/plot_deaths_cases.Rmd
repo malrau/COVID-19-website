@@ -1,0 +1,5 @@
+## Deaths
+
+```{r, fig.width=8, fig.height=5, warning=FALSE}
+csse_deaths_table %>% .plot_function(group = plot_group)
+```

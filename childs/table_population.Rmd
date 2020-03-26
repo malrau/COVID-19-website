@@ -1,0 +1,15 @@
+```{r, include=FALSE}
+library(tidyverse)
+library(WDI)
+```
+
+```{r}
+population_table <- WDI(indicator = "SP.POP.TOTL", start = 2018, end = 2018)
+```
+
+```{r, child="csse_table_confirmed.Rmd"}
+```
+
+```{r}
+population_table <- population_table %>% subset(country %in% csse_confirmed_table$`Country/Region`)
+```
