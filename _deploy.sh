@@ -5,6 +5,7 @@ cd site-output
 git reset --hard HEAD^
 git rm -rf *
 cp -r ../_site/* ./
+touch ./.nojekyll
 git add --all *
 git commit -m "Update the site"
 git push -qf origin gh-pages
