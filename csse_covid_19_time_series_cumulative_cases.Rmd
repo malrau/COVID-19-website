@@ -18,9 +18,9 @@ csse_confirmed_table <- csse_confirmed_table %>%
 csse_deaths_table <- csse_deaths_table %>%
     group_by(`Date`, `Country/Region`) %>%
     summarise(Value = sum(Cases))
-# csse_recovered_table <- csse_recovered_table %>%
-#     group_by(`Date`, `Country/Region`) %>%
-#     summarise(Value = sum(Cases))
+csse_recovered_table <- csse_recovered_table %>%
+    group_by(`Date`, `Country/Region`) %>%
+    summarise(Value = sum(Cases))
 ```
 
 ```{r}

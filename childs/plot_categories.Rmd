@@ -60,11 +60,11 @@ library(plotly)
 ```{r, child="plot_confirmed_cases.Rmd"}
 ```
 
-```{r, child="plot_active_cases.Rmd", eval=FALSE}
+```{r, child="plot_active_cases.Rmd"}
 ```
 
 ```{r, child="plot_deaths_cases.Rmd"}
 ```
 
-```{r, child="plot_recovered_cases.Rmd", eval=FALSE}
+```{r, child="plot_recovered_cases.Rmd"}
 ```

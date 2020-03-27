@@ -27,12 +27,12 @@ csse_deaths_table <- csse_deaths_table %>%
     mutate(Value = Cases / SP.POP.TOTL * 10E3) %>%
     group_by(`Date`, `Country/Region`) %>%
     summarise(Value = sum(Value))
-# csse_recovered_table <- csse_recovered_table %>% 
-#     left_join(population_table, by = c("Country/Region" = "country")) %>%
-#     subset(SP.POP.TOTL > 0) %>% 
-#     mutate(Value = Cases / SP.POP.TOTL * 10E3) %>% 
-#     group_by(`Date`, `Country/Region`) %>%
-#     summarise(Value = sum(Value))
+csse_recovered_table <- csse_recovered_table %>%
+    left_join(population_table, by = c("Country/Region" = "country")) %>%
+    subset(SP.POP.TOTL > 0) %>%
+    mutate(Value = Cases / SP.POP.TOTL * 10E3) %>%
+    group_by(`Date`, `Country/Region`) %>%
+    summarise(Value = sum(Value))
 ```
 
 ```{r}

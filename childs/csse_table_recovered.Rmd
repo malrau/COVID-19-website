@@ -6,7 +6,7 @@ library(tidyverse)
 ```
 
 ```{r, message=FALSE}
-csse_recovered_table <- read_csv("../COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv")
+csse_recovered_table <- read_csv("../COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv")
 ```
 
 ```{r}

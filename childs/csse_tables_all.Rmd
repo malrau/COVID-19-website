@@ -4,5 +4,5 @@
 ```{r, child="csse_table_deaths.Rmd"}
 ```
 
-```{r, child="csse_table_recovered.Rmd", eval=FALSE}
+```{r, child="csse_table_recovered.Rmd"}
 ```

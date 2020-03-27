@@ -20,10 +20,10 @@ csse_deaths_table <- csse_deaths_table %>%
     subset(`Country/Region` == "China") %>% 
     group_by(`Date`, `Province/State`) %>%
     summarise(Value = sum(Cases))
-# csse_recovered_table <- csse_recovered_table %>%
-#     subset(`Country/Region` == "China") %>% 
-#     group_by(`Date`, `Province/State`) %>%
-#     summarise(Value = sum(Cases))
+csse_recovered_table <- csse_recovered_table %>%
+    subset(`Country/Region` == "China") %>%
+    group_by(`Date`, `Province/State`) %>%
+    summarise(Value = sum(Cases))
 ```
 
 ```{r}

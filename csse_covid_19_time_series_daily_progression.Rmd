@@ -24,12 +24,12 @@ csse_deaths_table <- csse_deaths_table %>%
     arrange(`Country/Region`, Date) %>% 
     mutate(Value = c(0, diff(Value))) %>%
     ungroup()
-# csse_recovered_table <- csse_recovered_table %>%
-#     group_by(`Country/Region`, Date) %>%
-#     summarise(Value = sum(Cases)) %>%
-#     arrange(`Country/Region`, Date) %>% 
-#     mutate(Value = c(0, diff(Value))) %>%
-#     ungroup()
+csse_recovered_table <- csse_recovered_table %>%
+    group_by(`Country/Region`, Date) %>%
+    summarise(Value = sum(Cases)) %>%
+    arrange(`Country/Region`, Date) %>%
+    mutate(Value = c(0, diff(Value))) %>%
+    ungroup()
 ```
 
 ```{r}
