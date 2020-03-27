@@ -1,5 +1,5 @@
 git clone -b gh-pages \
-  git@github.com:kevinrue/COVID-19-rmarkdown.git \
+  git@github.com:kevinrue/COVID-19-website.git \
   site-output
 cd site-output
 git reset --hard HEAD^
