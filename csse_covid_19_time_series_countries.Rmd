@@ -13,13 +13,13 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```{r, echo=FALSE}
 data_table <- merge(
-  csse_confirmed_table %>% subset(is.na(`Province/State`)) %>% rename(Confirmed = "Cases"),
-  csse_deaths_table %>% subset(is.na(`Province/State`)) %>% rename(Deaths = "Cases"),
+  csse_confirmed_table %>% rename(Confirmed = "Cases"),
+  csse_deaths_table %>% rename(Deaths = "Cases"),
   all = TRUE
 ) %>% select(-`Province/State`)
 data_table <- merge(
   data_table,
-  csse_recovered_table %>% subset(is.na(`Province/State`)) %>% rename(Recovered = "Cases"),
+  csse_recovered_table %>% rename(Recovered = "Cases"),
   all = TRUE
 ) %>% select(-`Province/State`)
 data_table <- data_table %>% mutate(
