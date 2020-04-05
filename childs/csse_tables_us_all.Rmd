@@ -1,0 +1,5 @@
+```{r, child="csse_table_us_confirmed.Rmd"}
+```
+
+```{r, child="csse_table_us_deaths.Rmd"}
+```

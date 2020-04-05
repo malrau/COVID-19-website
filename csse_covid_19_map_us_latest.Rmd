@@ -8,7 +8,7 @@ library(leaflet)
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-```{r, child="childs/csse_tables_all.Rmd"}
+```{r, child="childs/csse_tables_us_all.Rmd"}
 ```
 
 ```{r, echo=FALSE}
