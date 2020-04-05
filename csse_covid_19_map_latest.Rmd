@@ -45,12 +45,12 @@ plot_data <- data_table %>%
 
 ```{r}
 # Automatically adjust the multiplier to fix the maximum radius irrespective of the data
-radius_multiplier <- 2E5 / max(log(plot_data$Deaths + 1), na.rm = TRUE)
+radius_multiplier <- 2E5 / max(sqrt(plot_data$Deaths), na.rm = TRUE)
 ```
 
 ## Deaths
 
-In this view, the radius of the circle is proportional to the logarithm of the death toll at the latest time point.
+In this view, the area of the circle is proportional to the death toll at the latest time point.
 Click on the circle to open a popup with the latest statistics.
 
 ```{r, fig.width=8, fig.height=5, results='asis', warning=FALSE}
@@ -60,7 +60,7 @@ leaflet(plot_data) %>%
   addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
   addCircles(
     lng = ~Longitude, lat = ~Latitude, weight = 1,
-    radius = ~log(Deaths + 1) * radius_multiplier,
+    radius = ~sqrt(Deaths) * radius_multiplier,
     popup = sprintf(
     paste(
       "<strong>%s</strong>",
