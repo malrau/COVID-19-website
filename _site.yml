@@ -18,6 +18,8 @@ navbar:
       menu:
       - text: "World"
         href: csse_covid_19_map_latest.html
+      - text: "USA"
+        href: csse_covid_19_map_us_latest.html
     - text: "Regions"
       menu:
       - text: "China"

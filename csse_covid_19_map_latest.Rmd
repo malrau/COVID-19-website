@@ -44,7 +44,7 @@ plot_data <- data_table %>%
 ```
 
 ```{r}
-# Automatically adjust the multiplier to fix the maximum radius irrespective of the data
+# Automatically adjust the multiplier to fix the maximum radius to 200km
 radius_multiplier <- 2E5 / max(sqrt(plot_data$Deaths), na.rm = TRUE)
 ```
 

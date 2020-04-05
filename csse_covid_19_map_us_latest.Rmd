@@ -1,0 +1,59 @@
+---
+title: "US cities"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(leaflet)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, child="childs/csse_tables_all.Rmd"}
+```
+
+```{r, echo=FALSE}
+# Adapted from csse_covid_19_time_series_countries.Rmd (TODO: refactor)
+data_table <- merge(
+  csse_confirmed_us_table %>% rename(Confirmed = "Cases"), # %>% select(Province_State, Country_Region, Lat, Long_, Date, Confirmed)
+  csse_deaths_us_table %>% rename(Deaths = "Cases"), # %>% select(Province_State, Country_Region, Lat, Long_, Date, Deaths)
+  all = TRUE
+) %>% select(-Province_State)
+data_table <- data_table %>% mutate(
+  Confirmed = ifelse(is.na(Confirmed), 0, Confirmed),
+  Deaths = ifelse(is.na(Deaths), 0, Deaths)
+)
+data_table <- data_table %>%
+  subset(Date == max(Date))
+```
+
+```{r}
+# Automatically adjust the multiplier to fix the maximum radius to 20km
+radius_multiplier <- 20E3 / max(sqrt(data_table$Deaths), na.rm = TRUE)
+```
+
+## Deaths
+
+In this view, the area of the circle is proportional to the death toll at the latest time point.
+Click on the circle to open a popup with the latest statistics.
+
+```{r, fig.width=8, fig.height=5, results='asis', warning=FALSE}
+leaflet(data_table) %>%
+  addTiles() %>% 
+  addProviderTiles(providers$Esri.WorldImagery, group = "World Imagery") %>%
+  addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
+  addCircles(
+    lng = ~Long_, lat = ~Lat, weight = 1,
+    radius = ~sqrt(Deaths) * radius_multiplier,
+    popup = sprintf(
+    paste(
+      "<strong>%s</strong>",
+      "<i>%s</i>",
+      "Confirmed cases: %s",
+      "Death: %s",
+      sep = "</br>"),
+    format(data_table$Date, "%a %b %d"),
+    data_table$Admin2,
+    format(data_table$Confirmed, big.mark = ","),
+    format(data_table$Deaths, big.mark = ","))
+  )
+```
