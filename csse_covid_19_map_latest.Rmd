@@ -1,0 +1,80 @@
+---
+title: "World map"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(leaflet)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, child="childs/csse_tables_all.Rmd"}
+```
+
+```{r, echo=FALSE}
+# Adapted from csse_covid_19_time_series_countries.Rmd (TODO: refactor)
+data_table <- merge(
+  csse_confirmed_table %>% rename(Confirmed = "Cases"),
+  csse_deaths_table %>% rename(Deaths = "Cases"),
+  all = TRUE
+) %>% select(-`Province/State`)
+data_table <- merge(
+  data_table,
+  csse_recovered_table %>% rename(Recovered = "Cases"),
+  all = TRUE
+) %>% select(-`Province/State`)
+data_table <- data_table %>% mutate(
+  Confirmed = ifelse(is.na(Confirmed), 0, Confirmed),
+  Deaths = ifelse(is.na(Deaths), 0, Deaths),
+  Recovered = ifelse(is.na(Recovered), 0, Recovered)
+)
+data_table <- data_table %>% mutate(Active = Confirmed - Deaths - Recovered)
+plot_data <- data_table %>%
+  subset(Date == max(Date)) %>%
+  group_by(`Country/Region`) %>% 
+  summarise(
+    Date = max(Date),
+    Latitude = Lat[Confirmed == max(Confirmed)], # order matters: must happen before 'Confirmed' is summarised
+    Longitude = Long[Confirmed == max(Confirmed)], # order matters: must happen before 'Confirmed' is summarised
+    Confirmed = sum(Confirmed),
+    Active = sum(Active),
+    Deaths = sum(Deaths),
+    Recovered = sum(Recovered)
+  )
+```
+
+```{r}
+# Automatically adjust the multiplier to fix the maximum radius irrespective of the data
+radius_multiplier <- 2E5 / max(log(plot_data$Deaths + 1), na.rm = TRUE)
+```
+
+## Deaths
+
+In this view, the radius of the circle is proportional to the logarithm of the death toll at the latest time point.
+Click on the circle to open a popup with the latest statistics.
+
+```{r, fig.width=8, fig.height=5, results='asis', warning=FALSE}
+leaflet(plot_data) %>%
+  addTiles() %>% 
+  addProviderTiles(providers$Esri.WorldImagery, group = "World Imagery") %>%
+  addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
+  addCircles(
+    lng = ~Longitude, lat = ~Latitude, weight = 1,
+    radius = ~log(Deaths + 1) * radius_multiplier,
+    popup = sprintf(
+    paste(
+      "<strong>%s</strong>",
+      "<i>%s</i>",
+      "Confirmed cases: %s",
+      "Active cases: %s",
+      "Death: %s",
+      "Recovered: %s",
+      sep = "</br>"),
+    format(plot_data$Date, "%a %b %d"),
+    plot_data$`Country/Region`,
+    format(plot_data$Confirmed, big.mark = ","),
+    format(plot_data$Active, big.mark = ","),
+    format(plot_data$Deaths, big.mark = ","),
+    format(plot_data$Recovered, big.mark = ","))
+  )
+```
