@@ -5,14 +5,13 @@ title: "Cumulative cases"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(sars2pack)
-library(tidyverse)
 ```
 
 ```{r}
 csse_table <- jhu_data()
 ```
 
-The figures below display the total number of cases tracked over the course of the epidemic.
+The figures below display the total number of cases tracked over the course of the epidemic, by week (starting on Sundays).
 
 ```{r}
 plot_group <- "CountryRegion"

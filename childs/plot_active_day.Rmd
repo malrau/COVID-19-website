@@ -1,3 +1,7 @@
+```{r, include=FALSE}
+library(tidyverse)
+```
+
 ## Active cases
 
 Active cases are confirmed cases excluding those that led to death or recovery.

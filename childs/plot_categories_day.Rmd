@@ -36,7 +36,7 @@ library(plotly)
                                   family = 'sans serif',
                                   size = 14))
     saturdays <- data %>%
-      select(Date) %>%
+      dplyr::select(Date) %>%
       unique() %>%
       mutate(weekdays = weekdays(Date)) %>%
       subset(weekdays == "Saturday") %>% 

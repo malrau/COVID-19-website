@@ -1,4 +1,5 @@
 ```{r, include=FALSE}
+library(tidyverse)
 library(lubridate)
 ```
 
@@ -7,7 +8,7 @@ library(lubridate)
 ```{r, fig.width=8, fig.height=5, warning=FALSE}
 csse_table %>% 
     subset(subset == "deaths") %>%
-    mutate(week = week(date)) %>%
+    mutate(week = epiweek(date)) %>%
     group_by(`week`, `CountryRegion`) %>%
     summarise(count = max(count)) %>%
     .plot_function(group = plot_group)

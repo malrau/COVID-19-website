@@ -1,16 +1,20 @@
+```{r, include=FALSE}
+library(tidyverse)
+```
+
 ## Active cases
 
 Active cases are confirmed cases excluding those that led to death or recovery.
 
 ```{r}
 csse_merged_table <- merge(
-  csse_table %>% subset(subset == "confirmed") %>% select(-subset) %>% rename(Confirmed = "count"),
-  csse_table %>% subset(subset == "deaths") %>% select(-subset) %>% rename(Deaths = "count"),
+  csse_table %>% filter(subset == "confirmed") %>% dplyr::select(-subset) %>% rename(Confirmed = "count"),
+  csse_table %>% filter(subset == "deaths") %>% dplyr::select(-subset) %>% rename(Deaths = "count"),
   all = TRUE
 )
 csse_merged_table <- merge(
   csse_merged_table,
-  csse_table %>% subset(subset == "recovered") %>% select(-subset) %>% rename(Recovered = "count"),
+  csse_table %>% subset(subset == "recovered") %>% dplyr::select(-subset) %>% rename(Recovered = "count"),
   all = TRUE
 )
 csse_merged_table <- csse_merged_table %>% mutate(count = Confirmed - Deaths - Recovered)
@@ -18,7 +22,7 @@ csse_merged_table <- csse_merged_table %>% mutate(count = Confirmed - Deaths - R
 
 ```{r, warning=FALSE}
 csse_merged_table %>% 
-    mutate(week = week(date)) %>%
+    mutate(week = epiweek(date)) %>%
     group_by(`week`, `CountryRegion`) %>%
     summarise(count = max(count)) %>%
     .plot_function(group = plot_group)

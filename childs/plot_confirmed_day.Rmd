@@ -1,3 +1,7 @@
+```{r, include=FALSE}
+library(tidyverse)
+```
+
 ## Confirmed cases
 
 Confirmed cases include _all_ cases detected detected over the course of the epidemic.
