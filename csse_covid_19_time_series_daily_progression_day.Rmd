@@ -36,5 +36,5 @@ csse_recovered_table <- csse_recovered_table %>%
 plot_group <- "Country/Region"
 ```
 
-```{r, child="childs/plot_categories.Rmd"}
+```{r, child="childs/plot_categories_day.Rmd"}
 ```

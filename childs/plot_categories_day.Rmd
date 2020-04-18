@@ -57,14 +57,14 @@ library(plotly)
 
 # Categories {.tabset}
 
-```{r, child="plot_confirmed_cases.Rmd"}
+```{r, child="plot_confirmed_day.Rmd"}
 ```
 
-```{r, child="plot_active_cases.Rmd"}
+```{r, child="plot_active_day.Rmd"}
 ```
 
-```{r, child="plot_deaths_cases.Rmd"}
+```{r, child="plot_deaths_day.Rmd"}
 ```
 
-```{r, child="plot_recovered_cases.Rmd"}
+```{r, child="plot_recovered_day.Rmd"}
 ```

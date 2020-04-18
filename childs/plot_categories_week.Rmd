@@ -1,0 +1,59 @@
+```{r, include=FALSE}
+library(tidyverse)
+library(plotly)
+```
+
+```{r}
+.plot_function <- function(data, group) {
+    label_data <- data %>%
+        subset(week == max(week))
+    fig <- plot_ly()
+    fig <- fig %>%
+        add_trace(
+            type = 'scatter',
+            mode = 'lines+markers',
+            x = data$week,
+            y = data$count,
+            color = data[[group]],
+            text = data[[group]],
+            hovertemplate = paste('<i>Count</i>: %{y}',
+                                '<br><b>Week</b>: %{x}<br>',
+                                '<b>%{text}</b>'),
+            showlegend = FALSE
+      )
+    fig <- fig %>% add_annotations(x = label_data$week,
+                      y = label_data$count,
+                      text = label_data[[group]],
+                      xref = "x",
+                      yref = "y",
+                      showarrow = TRUE,
+                      arrowhead = 4,
+                      arrowsize = .5,
+                      ax = 20,
+                      ay = 0,
+                      # Styling annotations' text:
+                      font = list(color = '#264E86',
+                                  family = 'sans serif',
+                                  size = 14))
+    current_week <- list(type = "rect",
+                 fillcolor = "orange", line = list(color = "orange"), opacity = 0.1,
+                 x0 = week(lubridate::today()) - 0.5, x1 = week(lubridate::today()) + 0.5, xref = "x",
+                 y0 = min(data$count, na.rm = TRUE), y1 = max(data$count, na.rm = TRUE), yref = "y")
+    fig <- layout(fig, title = "Orange areas indicate current week (incomplete data)", shapes = current_week)
+    fig
+}
+```
+
+# Categories {.tabset}
+
+```{r, child="plot_confirmed_week.Rmd"}
+```
+
+```{r, child="plot_active_week.Rmd"}
+```
+
+```{r, child="plot_deaths_week.Rmd"}
+```
+
+```{r, child="plot_recovered_week.Rmd"}
+```

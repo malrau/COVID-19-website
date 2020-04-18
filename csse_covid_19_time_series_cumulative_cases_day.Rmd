@@ -1,5 +1,5 @@
 ---
-title: "China: Provinces"
+title: "Cumulative cases"
 ---
 
 ```{r setup, include=FALSE}
@@ -13,22 +13,19 @@ The figures below display the total number of cases tracked over the course of t
 
 ```{r cumulative-cases}
 csse_confirmed_table <- csse_confirmed_table %>%
-    subset(`Country/Region` == "China") %>% 
-    group_by(`Date`, `Province/State`) %>%
+    group_by(`Date`, `Country/Region`) %>%
     summarise(Value = sum(Cases))
 csse_deaths_table <- csse_deaths_table %>%
-    subset(`Country/Region` == "China") %>% 
-    group_by(`Date`, `Province/State`) %>%
+    group_by(`Date`, `Country/Region`) %>%
     summarise(Value = sum(Cases))
 csse_recovered_table <- csse_recovered_table %>%
-    subset(`Country/Region` == "China") %>%
-    group_by(`Date`, `Province/State`) %>%
+    group_by(`Date`, `Country/Region`) %>%
     summarise(Value = sum(Cases))
 ```
 
 ```{r}
-plot_group <- "Province/State"
+plot_group <- "Country/Region"
 ```
 
-```{r, child="childs/plot_categories.Rmd"}
+```{r, child="childs/plot_categories_day.Rmd"}
 ```

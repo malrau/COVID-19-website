@@ -1,0 +1,14 @@
+```{r, include=FALSE}
+library(lubridate)
+```
+
+## Deaths
+
+```{r, fig.width=8, fig.height=5, warning=FALSE}
+csse_table %>% 
+    subset(subset == "deaths") %>%
+    mutate(week = week(date)) %>%
+    group_by(`week`, `CountryRegion`) %>%
+    summarise(count = max(count)) %>%
+    .plot_function(group = plot_group)
+```

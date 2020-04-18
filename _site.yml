@@ -4,26 +4,30 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Countries"
+    - text: "Daily"
       menu:
       - text: "Cumulative cases"
-        href: csse_covid_19_time_series_cumulative_cases.html
+        href: csse_covid_19_time_series_cumulative_cases_day.html
       - text: "Daily progression"
-        href: csse_covid_19_time_series_daily_progression.html
+        href: csse_covid_19_time_series_daily_progression_day.html
       - text: "Per capita"
-        href: csse_covid_19_time_series_per_capita.html
+        href: csse_covid_19_time_series_per_capita_day.html
       - text: "Individual countries"
-        href: csse_covid_19_time_series_countries.html
+        href: csse_covid_19_time_series_countries_day.html
+    - text: "Weekly"
+      menu:
+      - text: "Cumulative cases"
+        href: csse_covid_19_time_series_cumulative_cases_week.html
+    - text: "Regions"
+      menu:
+      - text: "China"
+        href: csse_covid_19_time_series_regions_china_day.html
     - text: "Maps"
       menu:
       - text: "World"
         href: csse_covid_19_map_latest.html
       - text: "USA"
         href: csse_covid_19_map_us_latest.html
-    - text: "Regions"
-      menu:
-      - text: "China"
-        href: csse_covid_19_time_series_regions_china.html
     - text: "Analyses"
       menu:
       - text: "Align countries"
