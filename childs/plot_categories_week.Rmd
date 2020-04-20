@@ -1,5 +1,6 @@
 ```{r, include=FALSE}
 library(tidyverse)
+library(lubridate)
 library(plotly)
 ```
 
@@ -37,7 +38,7 @@ library(plotly)
                                   size = 14))
     current_week <- list(type = "rect",
                  fillcolor = "orange", line = list(color = "orange"), opacity = 0.1,
-                 x0 = week(lubridate::today()) - 0.5, x1 = week(lubridate::today()) + 0.5, xref = "x",
+                 x0 = epiweek(today()) - 0.5, x1 = epiweek(today()) + 0.5, xref = "x",
                  y0 = min(data$count, na.rm = TRUE), y1 = max(data$count, na.rm = TRUE), yref = "y")
     fig <- layout(fig, title = "Orange areas indicate current week (incomplete data)", shapes = current_week)
     fig
