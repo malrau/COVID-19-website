@@ -10,6 +10,8 @@ csse_table %>%
     subset(subset == "deaths") %>%
     mutate(week = epiweek(date)) %>%
     group_by(`week`, `CountryRegion`) %>%
-    summarise(count = max(count)) %>%
+    summarise(
+        date = max(date),
+        count = max(count)) %>%
     .plot_function(group = plot_group)
 ```

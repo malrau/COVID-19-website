@@ -7,22 +7,22 @@ library(plotly)
 ```{r}
 .plot_function <- function(data, group) {
     label_data <- data %>%
-        subset(week == max(week))
+        subset(date == max(date))
     fig <- plot_ly()
     fig <- fig %>%
         add_trace(
             type = 'scatter',
             mode = 'lines+markers',
-            x = data$week,
+            x = data$date,
             y = data$count,
             color = data[[group]],
             text = data[[group]],
             hovertemplate = paste('<i>Count</i>: %{y}',
-                                '<br><b>Week</b>: %{x}<br>',
+                                '<br><b>Week ending</b>: %{x}<br>',
                                 '<b>%{text}</b>'),
             showlegend = FALSE
       )
-    fig <- fig %>% add_annotations(x = label_data$week,
+    fig <- fig %>% add_annotations(x = label_data$date,
                       y = label_data$count,
                       text = label_data[[group]],
                       xref = "x",
@@ -36,11 +36,15 @@ library(plotly)
                       font = list(color = '#264E86',
                                   family = 'sans serif',
                                   size = 14))
+    current_week_first_day <- data %>% 
+      subset(week == max(week) - 1) %>% 
+      head(1) %>% 
+      pull(date) + 1
     current_week <- list(type = "rect",
                  fillcolor = "orange", line = list(color = "orange"), opacity = 0.1,
-                 x0 = epiweek(today()) - 0.5, x1 = epiweek(today()) + 0.5, xref = "x",
+                 x0 = current_week_first_day, x1 = current_week_first_day + 6, xref = "x",
                  y0 = min(data$count, na.rm = TRUE), y1 = max(data$count, na.rm = TRUE), yref = "y")
-    fig <- layout(fig, title = "Orange areas indicate current week (incomplete data)", shapes = current_week)
+    fig <- layout(fig, title = "Orange area indicate current week (incomplete data)", shapes = current_week)
     fig
 }
 ```
