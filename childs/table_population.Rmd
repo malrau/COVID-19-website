@@ -1,15 +1,15 @@
 ```{r, include=FALSE}
 library(tidyverse)
 library(WDI)
+library(sars2pack)
 ```
 
 ```{r}
-population_table <- WDI(indicator = "SP.POP.TOTL", start = 2018, end = 2018)
-```
-
-```{r, child="csse_table_confirmed.Rmd"}
+population_table <- WDI(indicator = "SP.POP.TOTL", start = 2018, end = 2018) %>% 
+    mutate(country = recode(country, "United States" = "US"))
 ```
 
 ```{r}
-population_table <- population_table %>% subset(country %in% csse_confirmed_table$`Country/Region`)
+countries_tracked <- jhu_data() %>% pull(CountryRegion)
+population_table <- population_table %>% subset(country %in% countries_tracked)
 ```
