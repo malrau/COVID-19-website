@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>World map</title>
+
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-binding-2.0.3/leaflet.js"></script>
+<script src="site_libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
+<script src="site_libs/leaflet-providers-plugin-2.0.3/leaflet-providers-plugin.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">My COVID-19 Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Daily
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="csse_covid_19_time_series_cumulative_cases_day.html">Cumulative cases</a>
+    </li>
+    <li>
+      <a href="csse_covid_19_time_series_daily_progression_day.html">Daily progression</a>
+    </li>
+    <li>
+      <a href="csse_covid_19_time_series_per_capita_day.html">Per capita</a>
+    </li>
+    <li>
+      <a href="csse_covid_19_time_series_countries_day.html">Individual countries</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Weekly
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="csse_covid_19_time_series_cumulative_cases_week.html">Cumulative cases</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Regions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="csse_covid_19_time_series_regions_china_day.html">China</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Maps
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="csse_covid_19_map_latest.html">World</a>
+    </li>
+    <li>
+      <a href="csse_covid_19_map_us_latest.html">USA</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="analysis_align_countries.html">Align countries</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="wdi_population.html">Population size</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">World map</h1>
+
+</div>
+
+
+<div id="deaths" class="section level2">
+<h2>Deaths</h2>
+<p>In this view, the area of the circle is proportional to the death toll at the latest time point. Click on the circle to open a popup with the latest statistics.</p>
+<div id="htmlwidget-7d4485bb329a7f4f3504" style="width:768px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7d4485bb329a7f4f3504">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addProviderTiles","args":["Esri.WorldImagery",null,"World Imagery",{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addProviderTiles","args":["Stamen.TonerLite",null,"Toner Lite",{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addCircles","args":[[33,41.1533,28.0339,42.5063,-11.2027,17.0608,-38.4161,40.0691,-33.8688,47.5162,40.1431,25.0343,26.0275,23.685,13.1939,53.7098,50.8333,13.1939,9.3077,27.5142,-16.2902,43.9159,-22.3285,-14.235,4.5353,42.7339,12.2383,21.9162,-3.3731,16.5388,11.55,3.848,52.9399,6.6111,15.4542,-35.6751,30.9756,4.5709,-11.6455,-4.0383,-4.0383,9.7489,7.54,45.1,22,35.1264,49.8175,56.2639,0,11.8251,15.415,18.7357,-1.8312,26,13.7942,1.5,15.1794,58.5953,-26.5225,9.145,-17.7134,64,46.2276,-0.8037,13.4432,42.3154,51,7.9465,39.0742,12.1165,15.7835,9.9456,11.8037,5,18.9712,41.9029,15.2,47.1625,64.9631,21,-0.7893,32,33,53.1424,31,43,18.1096,36,31.24,48.0196,-0.0236,36,42.602636,29.5,41.2044,19.85627,56.8796,33.8547,6.4281,26.3351,47.14,55.1694,49.8153,-18.7669,-13.254308,2.5,3.2028,17.570692,35.9375,21.0079,-20.2,23.6345,47.4116,43.7333,46.8625,42.5,31.7917,-18.665695,0,-22.9576,28.1667,52.1326,-40.9006,12.8654,17.6078,9.082,41.6086,60.472,21,30.3753,8.538,-6.315,-23.4425,-9.19,13,51.9194,39.3999,25.3548,45.9432,60,-1.9403,17.357822,13.9094,12.9843,43.9424,0.18636,24,14.4974,44.0165,-4.6796,8.460555,1.2833,48.669,46.1512,5.1521,-30.5595,6.877,40,7,12.8628,3.9193,63,46.8182,34.802075,23.7,38.861034,-6.369,15,-8.874217,8.6195,10.6918,34,38.9637,1,48.3794,24,55.3781,-32.5228,37.0902,41.3775,6.4238,16,31.9522,24.2155,15.552727,-15.4167,-20],[65,20.1683,1.6596,1.5218,17.8739,-61.7964,-63.6167,45.0382,151.2093,14.5501,47.5769,-77.3963,50.55,90.3563,-59.5432,27.9534,4,-59.5432,2.3158,90.4336,-63.5887,17.6791,24.6849,-51.9253,114.7277,25.4858,-1.5616,95.956,29.9189,-23.0418,104.9167,11.5021,-73.5491,20.9394,18.7322,-71.543,112.2707,-74.2973,43.3333,21.7587,21.7587,-83.7534,-5.5471,15.2,-80,33.4299,15.473,9.5018,0,42.5903,-61.371,-70.1627,-78.1834,30,-88.8965,10,39.7823,25.0136,31.4659,40.4897,178.065,26,2.2137,11.6094,-15.3101,43.3569,9,-1.0232,21.8243,-61.679,-90.2308,-9.6966,-15.1804,-58.75,-72.2852,12.4534,-86.2419,19.5033,-19.0208,78,113.9213,53,44,-7.6921,35,12,-77.2975,138,36.51,66.9237,37.9062,128,20.902977,47.75,74.7661,102.495496,24.6032,35.8623,-9.4295,17.228331,9.55,23.8813,6.1296,46.8691,34.301525,112.5,73.2207,-3.996166,14.3754,10.9408,57.5,-102.5528,28.3699,7.4167,103.8467,19.3,-7.0926,35.529562,0,18.4904,84.25,5.2913,174.886,-85.2072,8.0817,8.6753,21.7453,8.4689,57,69.3451,-80.7821,143.9555,-58.4438,-75.0152,122,19.1451,-8.2245,51.1839,24.9668,90,29.8739,-62.782998,-60.9789,-61.2872,12.4578,6.613081,45,-14.4524,21.0059,55.492,-11.779889,103.8333,19.699,14.9955,46.1996,22.9375,31.307,-4,81,30.2176,-56.0278,16,8.2275,38.996815,121,71.276093,34.8888,101,125.727539,0.8248,-61.2225,9,35.2433,32,31.1656,54,-3.436,-55.7658,-95.7129,64.5853,-66.5897,108,35.2332,-12.8858,48.516388,28.2833,30],[7087.65984905248,4280.30041030931,16541.8431823515,5157.0300346046,1087.1973914165,1331.53942932767,12057.6023591778,4548.07299175153,7492.99092321517,18799.4003149821,3843.82323979466,2549.70388936943,2174.394782833,10227.7484256996,2033.96007523745,7649.1116681083,68086.6860297587,1087.1973914165,1087.1973914165,0,6701.93482363921,6745.88240812567,768.764647958932,64553.3464736063,768.764647958932,6568.32803142882,5157.0300346046,1883.08111978972,768.764647958932,1087.1973914165,0,6150.11718367145,47358.6478227117,0,2431.04727216774,12395.9574792498,52349.4293405643,14175.319698105,0,2306.29394387679,4416.21668064384,1883.08111978972,3169.69784477545,6832.92965221816,6292.60984208819,2977.41267869795,12106.5177825811,16912.8222550965,2771.82035697995,1087.1973914165,0,14028.6383856675,30402.673686701,15922.8956856207,2549.70388936943,768.764647958932,0,5701.31121912566,768.764647958932,1331.53942932767,0,11658.8931425254,121309.015289014,1719.01001153487,768.764647958932,2306.29394387679,63700.8611433978,3261.5921742495,9225.17577550718,0,3169.69784477545,2033.96007523745,768.764647958932,2306.29394387679,2306.29394387679,0,6961.45996785275,14175.319698105,2431.04727216774,28671.9327178414,22347.1301499533,60547.2321229522,7571.45370079536,27750.1676821727,11709.4742613291,130653.807984508,2306.29394387679,16965.1570545145,2306.29394387679,3994.61828798301,3766.16223957945,12203.7604514247,3605.82582038168,4738.98356086555,2431.04727216774,0,3075.05859183573,3843.82323979466,3261.5921742495,1331.53942932767,768.764647958932,5214.0155218186,7532.32447915889,0,1331.53942932767,7877.49349824543,768.764647958932,3994.61828798301,1537.52929591786,768.764647958932,2431.04727216774,35679.2940909901,8595.05005767433,1537.52929591786,0,2174.394782833,10140.7021752711,0,1087.1973914165,0,0,54749.8616783787,3438.02002306973,1719.01001153487,4612.58788775359,7170.55927412733,7045.84438175576,11166.951540763,2663.07885865534,16434.311101041,10790.1260205073,0,2431.04727216774,27568.5476940938,18940.3390666195,20017.4268805724,24827.6467785679,2663.07885865534,21607.6207927116,27504.1601845579,0,0,0,0,4922.49555022737,768.764647958932,10428.0310436372,2306.29394387679,10680.0198128386,0,2174.394782833,3261.5921742495,3766.16223957945,7532.32447915889,4348.789565666,8798.913569165,0,122192.47463305,2033.96007523745,4922.49555022737,768.764647958932,39790.533370462,32269.8061029564,1331.53942932767,1883.08111978972,1087.1973914165,3075.05859183573,5649.24335936917,0,2306.29394387679,2174.394782833,4982.16434152464,44806.5161353008,0,13046.368696998,8629.36177117861,129827.939497993,3169.69784477545,200000,2431.04727216774,2431.04727216774,0,1087.1973914165,0,1087.1973914165,1331.53942932767,1537.52929591786],null,null,{"interactive":true,"className":"","stroke":true,"color":"#03F","weight":1,"opacity":0.5,"fill":true,"fillColor":"#03F","fillOpacity":0.2},["<strong>Sun May 03<\/strong><\/br><i>Afghanistan<\/i><\/br>Confirmed cases:     2,704<\/br>Active cases:   2,274<\/br>Death:     85<\/br>Recovered:     345","<strong>Sun May 03<\/strong><\/br><i>Albania<\/i><\/br>Confirmed cases:       795<\/br>Active cases:     233<\/br>Death:     31<\/br>Recovered:     531","<strong>Sun May 03<\/strong><\/br><i>Algeria<\/i><\/br>Confirmed cases:     4,474<\/br>Active cases:   2,075<\/br>Death:    463<\/br>Recovered:   1,936","<strong>Sun May 03<\/strong><\/br><i>Andorra<\/i><\/br>Confirmed cases:       748<\/br>Active cases:     210<\/br>Death:     45<\/br>Recovered:     493","<strong>Sun May 03<\/strong><\/br><i>Angola<\/i><\/br>Confirmed cases:        35<\/br>Active cases:      22<\/br>Death:      2<\/br>Recovered:      11","<strong>Sun May 03<\/strong><\/br><i>Antigua and Barbuda<\/i><\/br>Confirmed cases:        25<\/br>Active cases:       7<\/br>Death:      3<\/br>Recovered:      15","<strong>Sun May 03<\/strong><\/br><i>Argentina<\/i><\/br>Confirmed cases:     4,783<\/br>Active cases:   3,183<\/br>Death:    246<\/br>Recovered:   1,354","<strong>Sun May 03<\/strong><\/br><i>Armenia<\/i><\/br>Confirmed cases:     2,386<\/br>Active cases:   1,316<\/br>Death:     35<\/br>Recovered:   1,035","<strong>Sun May 03<\/strong><\/br><i>Australia<\/i><\/br>Confirmed cases:     6,822<\/br>Active cases:     878<\/br>Death:     95<\/br>Recovered:   5,849","<strong>Sun May 03<\/strong><\/br><i>Austria<\/i><\/br>Confirmed cases:    15,597<\/br>Active cases:   1,771<\/br>Death:    598<\/br>Recovered:  13,228","<strong>Sun May 03<\/strong><\/br><i>Azerbaijan<\/i><\/br>Confirmed cases:     1,932<\/br>Active cases:     466<\/br>Death:     25<\/br>Recovered:   1,441","<strong>Sun May 03<\/strong><\/br><i>Bahamas<\/i><\/br>Confirmed cases:        83<\/br>Active cases:      48<\/br>Death:     11<\/br>Recovered:      24","<strong>Sun May 03<\/strong><\/br><i>Bahrain<\/i><\/br>Confirmed cases:     3,383<\/br>Active cases:   1,657<\/br>Death:      8<\/br>Recovered:   1,718","<strong>Sun May 03<\/strong><\/br><i>Bangladesh<\/i><\/br>Confirmed cases:     9,455<\/br>Active cases:   8,215<\/br>Death:    177<\/br>Recovered:   1,063","<strong>Sun May 03<\/strong><\/br><i>Barbados<\/i><\/br>Confirmed cases:        82<\/br>Active cases:      31<\/br>Death:      7<\/br>Recovered:      44","<strong>Sun May 03<\/strong><\/br><i>Belarus<\/i><\/br>Confirmed cases:    16,705<\/br>Active cases:  13,410<\/br>Death:     99<\/br>Recovered:   3,196","<strong>Sun May 03<\/strong><\/br><i>Belgium<\/i><\/br>Confirmed cases:    49,906<\/br>Active cases:  29,753<\/br>Death:  7,844<\/br>Recovered:  12,309","<strong>Sun May 03<\/strong><\/br><i>Belize<\/i><\/br>Confirmed cases:        18<\/br>Active cases:       3<\/br>Death:      2<\/br>Recovered:      13","<strong>Sun May 03<\/strong><\/br><i>Benin<\/i><\/br>Confirmed cases:        90<\/br>Active cases:      46<\/br>Death:      2<\/br>Recovered:      42","<strong>Sun May 03<\/strong><\/br><i>Bhutan<\/i><\/br>Confirmed cases:         7<\/br>Active cases:       2<\/br>Death:      0<\/br>Recovered:       5","<strong>Sun May 03<\/strong><\/br><i>Bolivia<\/i><\/br>Confirmed cases:     1,594<\/br>Active cases:   1,352<\/br>Death:     76<\/br>Recovered:     166","<strong>Sun May 03<\/strong><\/br><i>Bosnia and Herzegovina<\/i><\/br>Confirmed cases:     1,857<\/br>Active cases:     955<\/br>Death:     77<\/br>Recovered:     825","<strong>Sun May 03<\/strong><\/br><i>Botswana<\/i><\/br>Confirmed cases:        23<\/br>Active cases:      14<\/br>Death:      1<\/br>Recovered:       8","<strong>Sun May 03<\/strong><\/br><i>Brazil<\/i><\/br>Confirmed cases:   101,826<\/br>Active cases:  51,784<\/br>Death:  7,051<\/br>Recovered:  42,991","<strong>Sun May 03<\/strong><\/br><i>Brunei<\/i><\/br>Confirmed cases:       138<\/br>Active cases:       9<\/br>Death:      1<\/br>Recovered:     128","<strong>Sun May 03<\/strong><\/br><i>Bulgaria<\/i><\/br>Confirmed cases:     1,618<\/br>Active cases:   1,237<\/br>Death:     73<\/br>Recovered:     308","<strong>Sun May 03<\/strong><\/br><i>Burkina Faso<\/i><\/br>Confirmed cases:       662<\/br>Active cases:      77<\/br>Death:     45<\/br>Recovered:     540","<strong>Sun May 03<\/strong><\/br><i>Burma<\/i><\/br>Confirmed cases:       155<\/br>Active cases:     106<\/br>Death:      6<\/br>Recovered:      43","<strong>Sun May 03<\/strong><\/br><i>Burundi<\/i><\/br>Confirmed cases:        15<\/br>Active cases:       7<\/br>Death:      1<\/br>Recovered:       7","<strong>Sun May 03<\/strong><\/br><i>Cabo Verde<\/i><\/br>Confirmed cases:       165<\/br>Active cases:     130<\/br>Death:      2<\/br>Recovered:      33","<strong>Sun May 03<\/strong><\/br><i>Cambodia<\/i><\/br>Confirmed cases:       122<\/br>Active cases:       2<\/br>Death:      0<\/br>Recovered:     120","<strong>Sun May 03<\/strong><\/br><i>Cameroon<\/i><\/br>Confirmed cases:     2,077<\/br>Active cases:   1,060<\/br>Death:     64<\/br>Recovered:     953","<strong>Sun May 03<\/strong><\/br><i>Canada<\/i><\/br>Confirmed cases:    60,504<\/br>Active cases:  31,788<\/br>Death:  3,795<\/br>Recovered:  24,921","<strong>Sun May 03<\/strong><\/br><i>Central African Republic<\/i><\/br>Confirmed cases:        72<\/br>Active cases:      62<\/br>Death:      0<\/br>Recovered:      10","<strong>Sun May 03<\/strong><\/br><i>Chad<\/i><\/br>Confirmed cases:       117<\/br>Active cases:      68<\/br>Death:     10<\/br>Recovered:      39","<strong>Sun May 03<\/strong><\/br><i>Chile<\/i><\/br>Confirmed cases:    19,663<\/br>Active cases:   9,362<\/br>Death:    260<\/br>Recovered:  10,041","<strong>Sun May 03<\/strong><\/br><i>China<\/i><\/br>Confirmed cases:    83,964<\/br>Active cases:     643<\/br>Death:  4,637<\/br>Recovered:  78,684","<strong>Sun May 03<\/strong><\/br><i>Colombia<\/i><\/br>Confirmed cases:     7,668<\/br>Active cases:   5,606<\/br>Death:    340<\/br>Recovered:   1,722","<strong>Sun May 03<\/strong><\/br><i>Comoros<\/i><\/br>Confirmed cases:         3<\/br>Active cases:       3<\/br>Death:      0<\/br>Recovered:       0","<strong>Sun May 03<\/strong><\/br><i>Congo (Brazzaville)<\/i><\/br>Confirmed cases:       229<\/br>Active cases:     195<\/br>Death:      9<\/br>Recovered:      25","<strong>Sun May 03<\/strong><\/br><i>Congo (Kinshasa)<\/i><\/br>Confirmed cases:       674<\/br>Active cases:     566<\/br>Death:     33<\/br>Recovered:      75","<strong>Sun May 03<\/strong><\/br><i>Costa Rica<\/i><\/br>Confirmed cases:       739<\/br>Active cases:     347<\/br>Death:      6<\/br>Recovered:     386","<strong>Sun May 03<\/strong><\/br><i>Cote d'Ivoire<\/i><\/br>Confirmed cases:     1,398<\/br>Active cases:     728<\/br>Death:     17<\/br>Recovered:     653","<strong>Sun May 03<\/strong><\/br><i>Croatia<\/i><\/br>Confirmed cases:     2,096<\/br>Active cases:     528<\/br>Death:     79<\/br>Recovered:   1,489","<strong>Sun May 03<\/strong><\/br><i>Cuba<\/i><\/br>Confirmed cases:     1,649<\/br>Active cases:     755<\/br>Death:     67<\/br>Recovered:     827","<strong>Sun May 03<\/strong><\/br><i>Cyprus<\/i><\/br>Confirmed cases:       872<\/br>Active cases:     561<\/br>Death:     15<\/br>Recovered:     296","<strong>Sun May 03<\/strong><\/br><i>Czechia<\/i><\/br>Confirmed cases:     7,781<\/br>Active cases:   3,946<\/br>Death:    248<\/br>Recovered:   3,587","<strong>Sun May 03<\/strong><\/br><i>Denmark<\/i><\/br>Confirmed cases:     9,721<\/br>Active cases:   2,054<\/br>Death:    484<\/br>Recovered:   7,183","<strong>Sun May 03<\/strong><\/br><i>Diamond Princess<\/i><\/br>Confirmed cases:       712<\/br>Active cases:      54<\/br>Death:     13<\/br>Recovered:     645","<strong>Sun May 03<\/strong><\/br><i>Djibouti<\/i><\/br>Confirmed cases:     1,112<\/br>Active cases:     424<\/br>Death:      2<\/br>Recovered:     686","<strong>Sun May 03<\/strong><\/br><i>Dominica<\/i><\/br>Confirmed cases:        16<\/br>Active cases:       3<\/br>Death:      0<\/br>Recovered:      13","<strong>Sun May 03<\/strong><\/br><i>Dominican Republic<\/i><\/br>Confirmed cases:     7,954<\/br>Active cases:   6,015<\/br>Death:    333<\/br>Recovered:   1,606","<strong>Sun May 03<\/strong><\/br><i>Ecuador<\/i><\/br>Confirmed cases:    29,538<\/br>Active cases:  24,674<\/br>Death:  1,564<\/br>Recovered:   3,300","<strong>Sun May 03<\/strong><\/br><i>Egypt<\/i><\/br>Confirmed cases:     6,465<\/br>Active cases:   4,474<\/br>Death:    429<\/br>Recovered:   1,562","<strong>Sun May 03<\/strong><\/br><i>El Salvador<\/i><\/br>Confirmed cases:       490<\/br>Active cases:     325<\/br>Death:     11<\/br>Recovered:     154","<strong>Sun May 03<\/strong><\/br><i>Equatorial Guinea<\/i><\/br>Confirmed cases:       315<\/br>Active cases:     305<\/br>Death:      1<\/br>Recovered:       9","<strong>Sun May 03<\/strong><\/br><i>Eritrea<\/i><\/br>Confirmed cases:        39<\/br>Active cases:      13<\/br>Death:      0<\/br>Recovered:      26","<strong>Sun May 03<\/strong><\/br><i>Estonia<\/i><\/br>Confirmed cases:     1,700<\/br>Active cases:   1,386<\/br>Death:     55<\/br>Recovered:     259","<strong>Sun May 03<\/strong><\/br><i>Eswatini<\/i><\/br>Confirmed cases:       112<\/br>Active cases:      99<\/br>Death:      1<\/br>Recovered:      12","<strong>Sun May 03<\/strong><\/br><i>Ethiopia<\/i><\/br>Confirmed cases:       135<\/br>Active cases:      57<\/br>Death:      3<\/br>Recovered:      75","<strong>Sun May 03<\/strong><\/br><i>Fiji<\/i><\/br>Confirmed cases:        18<\/br>Active cases:       4<\/br>Death:      0<\/br>Recovered:      14","<strong>Sun May 03<\/strong><\/br><i>Finland<\/i><\/br>Confirmed cases:     5,254<\/br>Active cases:   2,024<\/br>Death:    230<\/br>Recovered:   3,000","<strong>Sun May 03<\/strong><\/br><i>France<\/i><\/br>Confirmed cases:   168,925<\/br>Active cases:  93,140<\/br>Death: 24,900<\/br>Recovered:  50,885","<strong>Sun May 03<\/strong><\/br><i>Gabon<\/i><\/br>Confirmed cases:       335<\/br>Active cases:     245<\/br>Death:      5<\/br>Recovered:      85","<strong>Sun May 03<\/strong><\/br><i>Gambia<\/i><\/br>Confirmed cases:        17<\/br>Active cases:       7<\/br>Death:      1<\/br>Recovered:       9","<strong>Sun May 03<\/strong><\/br><i>Georgia<\/i><\/br>Confirmed cases:       589<\/br>Active cases:     357<\/br>Death:      9<\/br>Recovered:     223","<strong>Sun May 03<\/strong><\/br><i>Germany<\/i><\/br>Confirmed cases:   165,664<\/br>Active cases:  28,198<\/br>Death:  6,866<\/br>Recovered: 130,600","<strong>Sun May 03<\/strong><\/br><i>Ghana<\/i><\/br>Confirmed cases:     2,169<\/br>Active cases:   1,922<\/br>Death:     18<\/br>Recovered:     229","<strong>Sun May 03<\/strong><\/br><i>Greece<\/i><\/br>Confirmed cases:     2,626<\/br>Active cases:   1,108<\/br>Death:    144<\/br>Recovered:   1,374","<strong>Sun May 03<\/strong><\/br><i>Grenada<\/i><\/br>Confirmed cases:        21<\/br>Active cases:       8<\/br>Death:      0<\/br>Recovered:      13","<strong>Sun May 03<\/strong><\/br><i>Guatemala<\/i><\/br>Confirmed cases:       703<\/br>Active cases:     614<\/br>Death:     17<\/br>Recovered:      72","<strong>Sun May 03<\/strong><\/br><i>Guinea<\/i><\/br>Confirmed cases:     1,586<\/br>Active cases:   1,174<\/br>Death:      7<\/br>Recovered:     405","<strong>Sun May 03<\/strong><\/br><i>Guinea-Bissau<\/i><\/br>Confirmed cases:       257<\/br>Active cases:     237<\/br>Death:      1<\/br>Recovered:      19","<strong>Sun May 03<\/strong><\/br><i>Guyana<\/i><\/br>Confirmed cases:        82<\/br>Active cases:      51<\/br>Death:      9<\/br>Recovered:      22","<strong>Sun May 03<\/strong><\/br><i>Haiti<\/i><\/br>Confirmed cases:        88<\/br>Active cases:      69<\/br>Death:      9<\/br>Recovered:      10","<strong>Sun May 03<\/strong><\/br><i>Holy See<\/i><\/br>Confirmed cases:        11<\/br>Active cases:       9<\/br>Death:      0<\/br>Recovered:       2","<strong>Sun May 03<\/strong><\/br><i>Honduras<\/i><\/br>Confirmed cases:     1,055<\/br>Active cases:     855<\/br>Death:     82<\/br>Recovered:     118","<strong>Sun May 03<\/strong><\/br><i>Hungary<\/i><\/br>Confirmed cases:     2,998<\/br>Active cases:   2,029<\/br>Death:    340<\/br>Recovered:     629","<strong>Sun May 03<\/strong><\/br><i>Iceland<\/i><\/br>Confirmed cases:     1,799<\/br>Active cases:      72<\/br>Death:     10<\/br>Recovered:   1,717","<strong>Sun May 03<\/strong><\/br><i>India<\/i><\/br>Confirmed cases:    42,505<\/br>Active cases:  29,339<\/br>Death:  1,391<\/br>Recovered:  11,775","<strong>Sun May 03<\/strong><\/br><i>Indonesia<\/i><\/br>Confirmed cases:    11,192<\/br>Active cases:   8,471<\/br>Death:    845<\/br>Recovered:   1,876","<strong>Sun May 03<\/strong><\/br><i>Iran<\/i><\/br>Confirmed cases:    97,424<\/br>Active cases:  12,799<\/br>Death:  6,203<\/br>Recovered:  78,422","<strong>Sun May 03<\/strong><\/br><i>Iraq<\/i><\/br>Confirmed cases:     2,296<\/br>Active cases:     709<\/br>Death:     97<\/br>Recovered:   1,490","<strong>Sun May 03<\/strong><\/br><i>Ireland<\/i><\/br>Confirmed cases:    21,506<\/br>Active cases:   6,817<\/br>Death:  1,303<\/br>Recovered:  13,386","<strong>Sun May 03<\/strong><\/br><i>Israel<\/i><\/br>Confirmed cases:    16,208<\/br>Active cases:   6,227<\/br>Death:    232<\/br>Recovered:   9,749","<strong>Sun May 03<\/strong><\/br><i>Italy<\/i><\/br>Confirmed cases:   210,717<\/br>Active cases: 100,179<\/br>Death: 28,884<\/br>Recovered:  81,654","<strong>Sun May 03<\/strong><\/br><i>Jamaica<\/i><\/br>Confirmed cases:       469<\/br>Active cases:     422<\/br>Death:      9<\/br>Recovered:      38","<strong>Sun May 03<\/strong><\/br><i>Japan<\/i><\/br>Confirmed cases:    14,877<\/br>Active cases:  10,409<\/br>Death:    487<\/br>Recovered:   3,981","<strong>Sun May 03<\/strong><\/br><i>Jordan<\/i><\/br>Confirmed cases:       461<\/br>Active cases:      85<\/br>Death:      9<\/br>Recovered:     367","<strong>Sun May 03<\/strong><\/br><i>Kazakhstan<\/i><\/br>Confirmed cases:     3,920<\/br>Active cases:   2,809<\/br>Death:     27<\/br>Recovered:   1,084","<strong>Sun May 03<\/strong><\/br><i>Kenya<\/i><\/br>Confirmed cases:       465<\/br>Active cases:     274<\/br>Death:     24<\/br>Recovered:     167","<strong>Sun May 03<\/strong><\/br><i>Korea, South<\/i><\/br>Confirmed cases:    10,801<\/br>Active cases:   1,332<\/br>Death:    252<\/br>Recovered:   9,217","<strong>Sun May 03<\/strong><\/br><i>Kosovo<\/i><\/br>Confirmed cases:       851<\/br>Active cases:     448<\/br>Death:     22<\/br>Recovered:     381","<strong>Sun May 03<\/strong><\/br><i>Kuwait<\/i><\/br>Confirmed cases:     4,983<\/br>Active cases:   3,169<\/br>Death:     38<\/br>Recovered:   1,776","<strong>Sun May 03<\/strong><\/br><i>Kyrgyzstan<\/i><\/br>Confirmed cases:       795<\/br>Active cases:     221<\/br>Death:     10<\/br>Recovered:     564","<strong>Sun May 03<\/strong><\/br><i>Laos<\/i><\/br>Confirmed cases:        19<\/br>Active cases:      10<\/br>Death:      0<\/br>Recovered:       9","<strong>Sun May 03<\/strong><\/br><i>Latvia<\/i><\/br>Confirmed cases:       879<\/br>Active cases:     515<\/br>Death:     16<\/br>Recovered:     348","<strong>Sun May 03<\/strong><\/br><i>Lebanon<\/i><\/br>Confirmed cases:       737<\/br>Active cases:     512<\/br>Death:     25<\/br>Recovered:     200","<strong>Sun May 03<\/strong><\/br><i>Liberia<\/i><\/br>Confirmed cases:       158<\/br>Active cases:      82<\/br>Death:     18<\/br>Recovered:      58","<strong>Sun May 03<\/strong><\/br><i>Libya<\/i><\/br>Confirmed cases:        63<\/br>Active cases:      38<\/br>Death:      3<\/br>Recovered:      22","<strong>Sun May 03<\/strong><\/br><i>Liechtenstein<\/i><\/br>Confirmed cases:        82<\/br>Active cases:      26<\/br>Death:      1<\/br>Recovered:      55","<strong>Sun May 03<\/strong><\/br><i>Lithuania<\/i><\/br>Confirmed cases:     1,410<\/br>Active cases:     729<\/br>Death:     46<\/br>Recovered:     635","<strong>Sun May 03<\/strong><\/br><i>Luxembourg<\/i><\/br>Confirmed cases:     3,824<\/br>Active cases:     349<\/br>Death:     96<\/br>Recovered:   3,379","<strong>Sun May 03<\/strong><\/br><i>Madagascar<\/i><\/br>Confirmed cases:       149<\/br>Active cases:      51<\/br>Death:      0<\/br>Recovered:      98","<strong>Sun May 03<\/strong><\/br><i>Malawi<\/i><\/br>Confirmed cases:        39<\/br>Active cases:      27<\/br>Death:      3<\/br>Recovered:       9","<strong>Sun May 03<\/strong><\/br><i>Malaysia<\/i><\/br>Confirmed cases:     6,298<\/br>Active cases:   1,780<\/br>Death:    105<\/br>Recovered:   4,413","<strong>Sun May 03<\/strong><\/br><i>Maldives<\/i><\/br>Confirmed cases:       527<\/br>Active cases:     508<\/br>Death:      1<\/br>Recovered:      18","<strong>Sun May 03<\/strong><\/br><i>Mali<\/i><\/br>Confirmed cases:       563<\/br>Active cases:     323<\/br>Death:     27<\/br>Recovered:     213","<strong>Sun May 03<\/strong><\/br><i>Malta<\/i><\/br>Confirmed cases:       477<\/br>Active cases:      81<\/br>Death:      4<\/br>Recovered:     392","<strong>Sun May 03<\/strong><\/br><i>Mauritania<\/i><\/br>Confirmed cases:         8<\/br>Active cases:       1<\/br>Death:      1<\/br>Recovered:       6","<strong>Sun May 03<\/strong><\/br><i>Mauritius<\/i><\/br>Confirmed cases:       332<\/br>Active cases:       7<\/br>Death:     10<\/br>Recovered:     315","<strong>Sun May 03<\/strong><\/br><i>Mexico<\/i><\/br>Confirmed cases:    23,471<\/br>Active cases:   7,870<\/br>Death:  2,154<\/br>Recovered:  13,447","<strong>Sun May 03<\/strong><\/br><i>Moldova<\/i><\/br>Confirmed cases:     4,121<\/br>Active cases:   2,614<\/br>Death:    125<\/br>Recovered:   1,382","<strong>Sun May 03<\/strong><\/br><i>Monaco<\/i><\/br>Confirmed cases:        95<\/br>Active cases:      13<\/br>Death:      4<\/br>Recovered:      78","<strong>Sun May 03<\/strong><\/br><i>Mongolia<\/i><\/br>Confirmed cases:        39<\/br>Active cases:      29<\/br>Death:      0<\/br>Recovered:      10","<strong>Sun May 03<\/strong><\/br><i>Montenegro<\/i><\/br>Confirmed cases:       322<\/br>Active cases:      65<\/br>Death:      8<\/br>Recovered:     249","<strong>Sun May 03<\/strong><\/br><i>Morocco<\/i><\/br>Confirmed cases:     4,903<\/br>Active cases:   3,291<\/br>Death:    174<\/br>Recovered:   1,438","<strong>Sun May 03<\/strong><\/br><i>Mozambique<\/i><\/br>Confirmed cases:        80<\/br>Active cases:      61<\/br>Death:      0<\/br>Recovered:      19","<strong>Sun May 03<\/strong><\/br><i>MS Zaandam<\/i><\/br>Confirmed cases:         9<\/br>Active cases:       7<\/br>Death:      2<\/br>Recovered:       0","<strong>Sun May 03<\/strong><\/br><i>Namibia<\/i><\/br>Confirmed cases:        16<\/br>Active cases:       8<\/br>Death:      0<\/br>Recovered:       8","<strong>Sun May 03<\/strong><\/br><i>Nepal<\/i><\/br>Confirmed cases:        75<\/br>Active cases:      59<\/br>Death:      0<\/br>Recovered:      16","<strong>Sun May 03<\/strong><\/br><i>Netherlands<\/i><\/br>Confirmed cases:    40,769<\/br>Active cases:  35,559<\/br>Death:  5,072<\/br>Recovered:     138","<strong>Sun May 03<\/strong><\/br><i>New Zealand<\/i><\/br>Confirmed cases:     1,487<\/br>Active cases:     191<\/br>Death:     20<\/br>Recovered:   1,276","<strong>Sun May 03<\/strong><\/br><i>Nicaragua<\/i><\/br>Confirmed cases:        15<\/br>Active cases:       3<\/br>Death:      5<\/br>Recovered:       7","<strong>Sun May 03<\/strong><\/br><i>Niger<\/i><\/br>Confirmed cases:       750<\/br>Active cases:     196<\/br>Death:     36<\/br>Recovered:     518","<strong>Sun May 03<\/strong><\/br><i>Nigeria<\/i><\/br>Confirmed cases:     2,558<\/br>Active cases:   2,071<\/br>Death:     87<\/br>Recovered:     400","<strong>Sun May 03<\/strong><\/br><i>North Macedonia<\/i><\/br>Confirmed cases:     1,511<\/br>Active cases:     482<\/br>Death:     84<\/br>Recovered:     945","<strong>Sun May 03<\/strong><\/br><i>Norway<\/i><\/br>Confirmed cases:     7,847<\/br>Active cases:   7,604<\/br>Death:    211<\/br>Recovered:      32","<strong>Sun May 03<\/strong><\/br><i>Oman<\/i><\/br>Confirmed cases:     2,568<\/br>Active cases:   1,806<\/br>Death:     12<\/br>Recovered:     750","<strong>Sun May 03<\/strong><\/br><i>Pakistan<\/i><\/br>Confirmed cases:    20,084<\/br>Active cases:  14,513<\/br>Death:    457<\/br>Recovered:   5,114","<strong>Sun May 03<\/strong><\/br><i>Panama<\/i><\/br>Confirmed cases:     7,090<\/br>Active cases:   6,252<\/br>Death:    197<\/br>Recovered:     641","<strong>Sun May 03<\/strong><\/br><i>Papua New Guinea<\/i><\/br>Confirmed cases:         8<\/br>Active cases:       8<\/br>Death:      0<\/br>Recovered:       0","<strong>Sun May 03<\/strong><\/br><i>Paraguay<\/i><\/br>Confirmed cases:       396<\/br>Active cases:     260<\/br>Death:     10<\/br>Recovered:     126","<strong>Sun May 03<\/strong><\/br><i>Peru<\/i><\/br>Confirmed cases:    45,928<\/br>Active cases:  31,092<\/br>Death:  1,286<\/br>Recovered:  13,550","<strong>Sun May 03<\/strong><\/br><i>Philippines<\/i><\/br>Confirmed cases:     9,223<\/br>Active cases:   7,402<\/br>Death:    607<\/br>Recovered:   1,214","<strong>Sun May 03<\/strong><\/br><i>Poland<\/i><\/br>Confirmed cases:    13,693<\/br>Active cases:   9,070<\/br>Death:    678<\/br>Recovered:   3,945","<strong>Sun May 03<\/strong><\/br><i>Portugal<\/i><\/br>Confirmed cases:    25,282<\/br>Active cases:  22,550<\/br>Death:  1,043<\/br>Recovered:   1,689","<strong>Sun May 03<\/strong><\/br><i>Qatar<\/i><\/br>Confirmed cases:    15,551<\/br>Active cases:  13,875<\/br>Death:     12<\/br>Recovered:   1,664","<strong>Sun May 03<\/strong><\/br><i>Romania<\/i><\/br>Confirmed cases:    13,163<\/br>Active cases:   7,504<\/br>Death:    790<\/br>Recovered:   4,869","<strong>Sun May 03<\/strong><\/br><i>Russia<\/i><\/br>Confirmed cases:   134,687<\/br>Active cases: 116,768<\/br>Death:  1,280<\/br>Recovered:  16,639","<strong>Sun May 03<\/strong><\/br><i>Rwanda<\/i><\/br>Confirmed cases:       259<\/br>Active cases:     135<\/br>Death:      0<\/br>Recovered:     124","<strong>Sun May 03<\/strong><\/br><i>Saint Kitts and Nevis<\/i><\/br>Confirmed cases:        15<\/br>Active cases:       7<\/br>Death:      0<\/br>Recovered:       8","<strong>Sun May 03<\/strong><\/br><i>Saint Lucia<\/i><\/br>Confirmed cases:        18<\/br>Active cases:       3<\/br>Death:      0<\/br>Recovered:      15","<strong>Sun May 03<\/strong><\/br><i>Saint Vincent and the Grenadines<\/i><\/br>Confirmed cases:        16<\/br>Active cases:       8<\/br>Death:      0<\/br>Recovered:       8","<strong>Sun May 03<\/strong><\/br><i>San Marino<\/i><\/br>Confirmed cases:       582<\/br>Active cases:     455<\/br>Death:     41<\/br>Recovered:      86","<strong>Sun May 03<\/strong><\/br><i>Sao Tome and Principe<\/i><\/br>Confirmed cases:        16<\/br>Active cases:      11<\/br>Death:      1<\/br>Recovered:       4","<strong>Sun May 03<\/strong><\/br><i>Saudi Arabia<\/i><\/br>Confirmed cases:    27,011<\/br>Active cases:  22,693<\/br>Death:    184<\/br>Recovered:   4,134","<strong>Sun May 03<\/strong><\/br><i>Senegal<\/i><\/br>Confirmed cases:     1,182<\/br>Active cases:     801<\/br>Death:      9<\/br>Recovered:     372","<strong>Sun May 03<\/strong><\/br><i>Serbia<\/i><\/br>Confirmed cases:     9,464<\/br>Active cases:   7,720<\/br>Death:    193<\/br>Recovered:   1,551","<strong>Sun May 03<\/strong><\/br><i>Seychelles<\/i><\/br>Confirmed cases:        11<\/br>Active cases:       5<\/br>Death:      0<\/br>Recovered:       6","<strong>Sun May 03<\/strong><\/br><i>Sierra Leone<\/i><\/br>Confirmed cases:       166<\/br>Active cases:     129<\/br>Death:      8<\/br>Recovered:      29","<strong>Sun May 03<\/strong><\/br><i>Singapore<\/i><\/br>Confirmed cases:    18,205<\/br>Active cases:  16,779<\/br>Death:     18<\/br>Recovered:   1,408","<strong>Sun May 03<\/strong><\/br><i>Slovakia<\/i><\/br>Confirmed cases:     1,408<\/br>Active cases:     765<\/br>Death:     24<\/br>Recovered:     619","<strong>Sun May 03<\/strong><\/br><i>Slovenia<\/i><\/br>Confirmed cases:     1,439<\/br>Active cases:   1,102<\/br>Death:     96<\/br>Recovered:     241","<strong>Sun May 03<\/strong><\/br><i>Somalia<\/i><\/br>Confirmed cases:       722<\/br>Active cases:     646<\/br>Death:     32<\/br>Recovered:      44","<strong>Sun May 03<\/strong><\/br><i>South Africa<\/i><\/br>Confirmed cases:     6,783<\/br>Active cases:   4,103<\/br>Death:    131<\/br>Recovered:   2,549","<strong>Sun May 03<\/strong><\/br><i>South Sudan<\/i><\/br>Confirmed cases:        46<\/br>Active cases:      46<\/br>Death:      0<\/br>Recovered:       0","<strong>Sun May 03<\/strong><\/br><i>Spain<\/i><\/br>Confirmed cases:   217,466<\/br>Active cases:  73,300<\/br>Death: 25,264<\/br>Recovered: 118,902","<strong>Sun May 03<\/strong><\/br><i>Sri Lanka<\/i><\/br>Confirmed cases:       718<\/br>Active cases:     527<\/br>Death:      7<\/br>Recovered:     184","<strong>Sun May 03<\/strong><\/br><i>Sudan<\/i><\/br>Confirmed cases:       592<\/br>Active cases:     499<\/br>Death:     41<\/br>Recovered:      52","<strong>Sun May 03<\/strong><\/br><i>Suriname<\/i><\/br>Confirmed cases:        10<\/br>Active cases:       0<\/br>Death:      1<\/br>Recovered:       9","<strong>Sun May 03<\/strong><\/br><i>Sweden<\/i><\/br>Confirmed cases:    22,317<\/br>Active cases:  18,633<\/br>Death:  2,679<\/br>Recovered:   1,005","<strong>Sun May 03<\/strong><\/br><i>Switzerland<\/i><\/br>Confirmed cases:    29,905<\/br>Active cases:   3,643<\/br>Death:  1,762<\/br>Recovered:  24,500","<strong>Sun May 03<\/strong><\/br><i>Syria<\/i><\/br>Confirmed cases:        44<\/br>Active cases:      14<\/br>Death:      3<\/br>Recovered:      27","<strong>Sun May 03<\/strong><\/br><i>Taiwan*<\/i><\/br>Confirmed cases:       436<\/br>Active cases:      98<\/br>Death:      6<\/br>Recovered:     332","<strong>Sun May 03<\/strong><\/br><i>Tajikistan<\/i><\/br>Confirmed cases:       128<\/br>Active cases:     126<\/br>Death:      2<\/br>Recovered:       0","<strong>Sun May 03<\/strong><\/br><i>Tanzania<\/i><\/br>Confirmed cases:       480<\/br>Active cases:     297<\/br>Death:     16<\/br>Recovered:     167","<strong>Sun May 03<\/strong><\/br><i>Thailand<\/i><\/br>Confirmed cases:     2,969<\/br>Active cases:     176<\/br>Death:     54<\/br>Recovered:   2,739","<strong>Sun May 03<\/strong><\/br><i>Timor-Leste<\/i><\/br>Confirmed cases:        24<\/br>Active cases:       8<\/br>Death:      0<\/br>Recovered:      16","<strong>Sun May 03<\/strong><\/br><i>Togo<\/i><\/br>Confirmed cases:       124<\/br>Active cases:      48<\/br>Death:      9<\/br>Recovered:      67","<strong>Sun May 03<\/strong><\/br><i>Trinidad and Tobago<\/i><\/br>Confirmed cases:       116<\/br>Active cases:      15<\/br>Death:      8<\/br>Recovered:      93","<strong>Sun May 03<\/strong><\/br><i>Tunisia<\/i><\/br>Confirmed cases:     1,013<\/br>Active cases:     643<\/br>Death:     42<\/br>Recovered:     328","<strong>Sun May 03<\/strong><\/br><i>Turkey<\/i><\/br>Confirmed cases:   126,045<\/br>Active cases:  59,497<\/br>Death:  3,397<\/br>Recovered:  63,151","<strong>Sun May 03<\/strong><\/br><i>Uganda<\/i><\/br>Confirmed cases:        89<\/br>Active cases:      37<\/br>Death:      0<\/br>Recovered:      52","<strong>Sun May 03<\/strong><\/br><i>Ukraine<\/i><\/br>Confirmed cases:    11,913<\/br>Active cases:  10,077<\/br>Death:    288<\/br>Recovered:   1,548","<strong>Sun May 03<\/strong><\/br><i>United Arab Emirates<\/i><\/br>Confirmed cases:    14,163<\/br>Active cases:  11,274<\/br>Death:    126<\/br>Recovered:   2,763","<strong>Sun May 03<\/strong><\/br><i>United Kingdom<\/i><\/br>Confirmed cases:   187,842<\/br>Active cases: 158,421<\/br>Death: 28,520<\/br>Recovered:     901","<strong>Sun May 03<\/strong><\/br><i>Uruguay<\/i><\/br>Confirmed cases:       655<\/br>Active cases:     196<\/br>Death:     17<\/br>Recovered:     442","<strong>Sun May 03<\/strong><\/br><i>US<\/i><\/br>Confirmed cases: 1,158,040<\/br>Active cases: 910,206<\/br>Death: 67,682<\/br>Recovered: 180,152","<strong>Sun May 03<\/strong><\/br><i>Uzbekistan<\/i><\/br>Confirmed cases:     2,149<\/br>Active cases:     820<\/br>Death:     10<\/br>Recovered:   1,319","<strong>Sun May 03<\/strong><\/br><i>Venezuela<\/i><\/br>Confirmed cases:       357<\/br>Active cases:     189<\/br>Death:     10<\/br>Recovered:     158","<strong>Sun May 03<\/strong><\/br><i>Vietnam<\/i><\/br>Confirmed cases:       271<\/br>Active cases:      52<\/br>Death:      0<\/br>Recovered:     219","<strong>Sun May 03<\/strong><\/br><i>West Bank and Gaza<\/i><\/br>Confirmed cases:       353<\/br>Active cases:     274<\/br>Death:      2<\/br>Recovered:      77","<strong>Sun May 03<\/strong><\/br><i>Western Sahara<\/i><\/br>Confirmed cases:         6<\/br>Active cases:       1<\/br>Death:      0<\/br>Recovered:       5","<strong>Sun May 03<\/strong><\/br><i>Yemen<\/i><\/br>Confirmed cases:        10<\/br>Active cases:       7<\/br>Death:      2<\/br>Recovered:       1","<strong>Sun May 03<\/strong><\/br><i>Zambia<\/i><\/br>Confirmed cases:       124<\/br>Active cases:      43<\/br>Death:      3<\/br>Recovered:      78","<strong>Sun May 03<\/strong><\/br><i>Zimbabwe<\/i><\/br>Confirmed cases:        34<\/br>Active cases:      25<\/br>Death:      4<\/br>Recovered:       5"],null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null,null]}],"limits":{"lat":[-40.9006,64.9631],"lng":[-102.5528,178.065]}},"evals":[],"jsHooks":[]}</script>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
